@@ -36,11 +36,7 @@ Add `blast-radius` under `mcpServers`:
       "command": "python",
       "args": [
         "D:\\blast-radius\\agent\\mcp_server.py"
-      ],
-      "env": {
-        "FALKORDB_HOST": "localhost",
-        "FALKORDB_PORT": "6379"
-      }
+      ]
     }
   }
 }
@@ -73,11 +69,7 @@ Add `blast-radius` under `mcpServers`:
       "command": "python",
       "args": [
         "D:\\blast-radius\\agent\\mcp_server.py"
-      ],
-      "env": {
-        "FALKORDB_HOST": "localhost",
-        "FALKORDB_PORT": "6379"
-      }
+      ]
     }
   }
 }

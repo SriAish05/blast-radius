@@ -603,3 +603,88 @@ body {
   height: 100%;
   background: linear-gradient(90deg, #f59e0b, #ef4444);
 }
+
+/* API Status Badge */
+.api-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.api-badge.live {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.api-badge.live .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.api-badge.mock {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.api-badge.mock .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #94a3b8;
+}
+
+/* Safe Sites Banner */
+.safe-sites-banner {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #166534;
+  font-size: 13px;
+}
+
+/* Live Alarm Toast */
+.alarm-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #7f1d1d;
+  color: #ffffff;
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+  max-width: 420px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+

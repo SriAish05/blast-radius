@@ -1,7 +1,7 @@
 import React from 'react';
-import { AlertTriangle, ExternalLink, ShieldAlert, Cpu } from 'lucide-react';
+import { AlertTriangle, ExternalLink, ShieldAlert, Cpu, ShieldCheck } from 'lucide-react';
 
-export default function IncidentOverview({ incident }) {
+export default function IncidentOverview({ incident, safeSites = [] }) {
   if (!incident) {
     return (
       <div className="card">
@@ -50,6 +50,23 @@ export default function IncidentOverview({ incident }) {
             {created_at && <span className="meta-pill">Detected: {new Date(created_at).toLocaleTimeString()}</span>}
           </div>
         </div>
+      </div>
+
+      {/* Safe Sites Banner */}
+      <div className="safe-sites-banner">
+        <ShieldCheck size={18} color="#16a34a" />
+        <span style={{ fontSize: '13px' }}>
+          {safeSites.length > 0 ? (
+            <>
+              <strong>{safeSites.length} site{safeSites.length === 1 ? '' : 's'} safe:</strong>{' '}
+              {safeSites.map((s) => s.displayName || s.name || s.id).join(', ')}
+            </>
+          ) : (
+            <>
+              <strong>Perimeter Impact Assessment:</strong> All client websites in the knowledge graph are affected by this script.
+            </>
+          )}
+        </span>
       </div>
 
       {/* Table of affected sites/pages */}

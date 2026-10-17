@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(ROOT / ".env")
 
 try:
     from agent import tools

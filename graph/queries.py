@@ -7,9 +7,12 @@ import time
 
 from falkordb import FalkorDB
 
+from pathlib import Path
+ROOT = Path(__file__).resolve().parent.parent
+
 try:
     from dotenv import load_dotenv
-    load_dotenv()  # reads settings from .env
+    load_dotenv(ROOT / ".env")  # reads settings from .env
 except ImportError:
     pass
 
@@ -23,9 +26,9 @@ GRAPH = os.getenv("GRAPH_NAME", "agency_demo")
 _g = None
 
 
-def graph():
+def graph(reconnect=False):
     global _g
-    if _g is None:
+    if _g is None or reconnect:
         _g = FalkorDB(host=HOST, port=PORT, username=USER, password=PASSWORD, ssl=TLS).select_graph(GRAPH)
     return _g
 
@@ -33,7 +36,11 @@ def graph():
 def run(cypher, params=None):
     """Run a query and return (rows as dicts, trace info)."""
     start = time.time()
-    res = graph().query(cypher, params or {})
+    try:
+        res = graph().query(cypher, params or {})
+    except Exception:
+        # Cloud redis drops idle sockets; reconnect and retry once
+        res = graph(reconnect=True).query(cypher, params or {})
     cols = [h[1] if isinstance(h, (list, tuple)) else h for h in res.header]
     rows = [dict(zip(cols, r)) for r in res.result_set]
     trace = {"cypher": " ".join(cypher.split()), "params": params or {},
