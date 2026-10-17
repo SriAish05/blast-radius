@@ -7,8 +7,17 @@ import time
 
 from falkordb import FalkorDB
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # reads settings from .env
+except ImportError:
+    pass
+
 HOST = os.getenv("FALKORDB_HOST", "localhost")
 PORT = int(os.getenv("FALKORDB_PORT", "6379"))
+USER = os.getenv("FALKORDB_USERNAME") or None
+PASSWORD = os.getenv("FALKORDB_PASSWORD") or None
+TLS = os.getenv("FALKORDB_TLS", "false").lower() == "true"
 GRAPH = os.getenv("GRAPH_NAME", "agency_demo")
 
 _g = None
@@ -17,7 +26,7 @@ _g = None
 def graph():
     global _g
     if _g is None:
-        _g = FalkorDB(host=HOST, port=PORT).select_graph(GRAPH)
+        _g = FalkorDB(host=HOST, port=PORT, username=USER, password=PASSWORD, ssl=TLS).select_graph(GRAPH)
     return _g
 
 
