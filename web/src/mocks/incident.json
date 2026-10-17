@@ -1,0 +1,28 @@
+{
+  "id": "inc-001",
+  "kind": "hash_change",
+  "status": "open",
+  "created_at": "2026-10-17T20:15:00+05:30",
+  "script": "https://cdn-demo.netlify.app/chat-widget.js",
+  "summary": "chat-widget.js changed unexpectedly. 3 pages on 3 client sites load it, 2 of them only through another script.",
+  "affected": [
+    { "client": "Sweet Crumbs Bakery", "site": "https://bakery-demo.netlify.app", "page": "https://bakery-demo.netlify.app/",
+      "chain": ["https://bakery-demo.netlify.app/", "tag-loader.js", "chat-widget.js"], "runtime_only": true, "owner": "Teammate 3" },
+    { "client": "SmileCare Dental Clinic", "site": "https://clinic-demo.netlify.app", "page": "https://clinic-demo.netlify.app/",
+      "chain": ["https://clinic-demo.netlify.app/", "chat-widget.js"], "runtime_only": false, "owner": "Teammate 3" },
+    { "client": "BrightPath Coaching Centre", "site": "https://coaching-demo.netlify.app", "page": "https://coaching-demo.netlify.app/",
+      "chain": ["https://coaching-demo.netlify.app/", "tag-loader.js", "chat-widget.js"], "runtime_only": true, "owner": "Teammate 3" }
+  ],
+  "trace": [
+    { "step": 1, "tool": "blast_radius_script", "inputs": { "url": "https://cdn-demo.netlify.app/chat-widget.js" },
+      "cypher": "MATCH path = (c:Client)-[:OWNS]->(s:Site)-[:HAS_PAGE]->(p:Page)-[:LOADS*1..5]->(sc:Script {url: $url}) RETURN ...", "rows": 3, "time_ms": 4 },
+    { "step": 2, "tool": "owners", "inputs": { "site": "https://bakery-demo.netlify.app" },
+      "cypher": "MATCH (d:Developer)-[:MAINTAINS]->(s:Site {url: $site}) RETURN d.name", "rows": 1, "time_ms": 1 }
+  ],
+  "fix": {
+    "sri": "sha384-EXAMPLEEXAMPLEEXAMPLE",
+    "csp": "Content-Security-Policy: script-src 'self' https://cdnjs.cloudflare.com",
+    "patch": "- <script src=\"https://cdn-demo.netlify.app/tag-loader.js\"></script>\n+ <script src=\"/vendor/tag-loader.js\" integrity=\"sha384-EXAMPLE\" crossorigin=\"anonymous\"></script>"
+  },
+  "message": "Hi, a third-party chat widget on your website changed unexpectedly today. We have prepared a fix that pins the safe version. No customer data is affected as far as we can see. We will apply it once you confirm."
+}
