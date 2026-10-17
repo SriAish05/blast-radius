@@ -20,7 +20,10 @@ if str(ROOT) not in sys.path:
 from dotenv import load_dotenv
 load_dotenv()
 
-from agent import tools
+try:
+    from agent import tools
+except ImportError:
+    import tools
 
 # In-memory query cache: { normalized_question: response_dict }
 _CACHE: Dict[str, Dict[str, Any]] = {}
@@ -146,7 +149,7 @@ def answer_with_rules(question: str) -> Tuple[str, List[Dict[str, Any]]]:
         # Extract site url or domain
         site_candidates = re.findall(r'https?://[^\s,\'\"]+|[a-zA-Z0-9_\-\.]+\.netlify\.app|[a-zA-Z0-9_\-]+\-demo', question)
         if site_candidates:
-            site = site_candidates[0]
+            site = site_candidates[0].strip().rstrip("?,.;:/")
             rows, traces = tools.owners(site)
             raw_traces.extend(traces)
             return _format_owners_answer(site, rows), raw_traces

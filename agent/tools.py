@@ -18,7 +18,7 @@ from graph import queries
 
 def resolve_script_url(name_or_url: str) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
     """Resolve a full or partial script name to its stored full URL using ENDS WITH."""
-    clean = name_or_url.strip()
+    clean = name_or_url.strip().rstrip("?,.;:/")
     cypher = (
         "MATCH (sc:Script) "
         "WHERE sc.url = $target OR sc.url ENDS WITH $target "
@@ -34,7 +34,7 @@ def resolve_script_url(name_or_url: str) -> Tuple[Optional[str], Optional[Dict[s
 
 def resolve_site_url(name_or_url: str) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
     """Resolve a full or partial site name/domain to its stored site URL."""
-    clean = name_or_url.strip().rstrip("/")
+    clean = name_or_url.strip().rstrip("?,.;:/")
     cypher = (
         "MATCH (s:Site) "
         "WHERE s.url = $target OR s.url = $target_slash OR s.domain = $target OR s.url ENDS WITH $target "
@@ -50,7 +50,7 @@ def resolve_site_url(name_or_url: str) -> Tuple[Optional[str], Optional[Dict[str
 
 def resolve_page_url(name_or_url: str) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
     """Resolve a full or partial page URL."""
-    clean = name_or_url.strip()
+    clean = name_or_url.strip().rstrip("?,.;:")
     cypher = (
         "MATCH (p:Page) "
         "WHERE p.url = $target OR p.url ENDS WITH $target "
