@@ -11,11 +11,20 @@ from urllib.parse import urlparse
 
 from falkordb import FalkorDB
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # reads settings from .env
+except ImportError:
+    pass
+
 ROOT = Path(__file__).resolve().parent.parent
 KEY_FILE = ROOT / "contracts" / "answer_key.json"
 
 HOST = os.getenv("FALKORDB_HOST", "localhost")
 PORT = int(os.getenv("FALKORDB_PORT", "6379"))
+USER = os.getenv("FALKORDB_USERNAME") or None
+PASSWORD = os.getenv("FALKORDB_PASSWORD") or None
+TLS = os.getenv("FALKORDB_TLS", "false").lower() == "true"
 
 
 def domain_of(url):
@@ -25,7 +34,7 @@ def domain_of(url):
 def main():
     key = json.loads(KEY_FILE.read_text())
     graph_name = key.get("agency", "agency_demo")
-    db = FalkorDB(host=HOST, port=PORT)
+    db = FalkorDB(host=HOST, port=PORT, username=USER, password=PASSWORD, ssl=TLS)
     g = db.select_graph(graph_name)
 
     # start clean
