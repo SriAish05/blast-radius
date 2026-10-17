@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Shield, AlertCircle, HelpCircle, Network, Layers, RefreshCw } from 'lucide-react';
 import { fetchIncidents, fetchIncident } from './services/api';
 import IncidentOverview from './components/IncidentOverview';
+import TracePanel from './components/TracePanel';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('incident'); // incident | ask | graph | spof
@@ -108,7 +109,10 @@ export default function App() {
           ) : (
             <>
               {activeTab === 'incident' && (
-                <IncidentOverview incident={incidentDetail} />
+                <>
+                  <IncidentOverview incident={incidentDetail} />
+                  <TracePanel trace={incidentDetail?.trace} />
+                </>
               )}
             </>
           )}
