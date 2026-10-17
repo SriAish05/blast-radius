@@ -1,6 +1,6 @@
 # Blast Radius MCP Server
 
-This MCP (Model Context Protocol) server allows AI assistants such as **Claude Desktop** to safely query the FalkorDB script blast radius knowledge graph using read-only, structured tools.
+This MCP (Model Context Protocol) server allows AI assistants such as **Google Antigravity** and **Claude Desktop** to safely query the FalkorDB script blast radius knowledge graph using read-only, structured tools.
 
 No raw or arbitrary Cypher queries are permitted; only the 5 curated domain tools are exposed.
 
@@ -15,6 +15,42 @@ No raw or arbitrary Cypher queries are permitted; only the 5 curated domain tool
 | `single_points_of_failure` | Identifies 3rd-party domains reaching the most client sites. | `limit`: integer (default: 10) | Top risky domains sorted by site count |
 | `scripts_changed_since` | Finds scripts whose content/hash changed after a given timestamp. | `iso_time`: ISO 8601 string (e.g. `2026-01-01`) | Changed scripts with timestamps |
 | `owners` | Finds the maintainer/developer responsible for a client website. | `site`: URL or domain | List of developer names |
+
+---
+
+## Connecting to Google Antigravity
+
+### 1. Open MCP Configuration
+In Antigravity:
+1. Click **Additional Options (...)** or **Settings / Manage MCP Servers**.
+2. Click **Edit `mcp_config.json`** (or open `~/.gemini/config/mcp_config.json` directly).
+
+### 2. Add the `blast-radius` Server
+
+Add `blast-radius` under `mcpServers`:
+
+```json
+{
+  "mcpServers": {
+    "blast-radius": {
+      "command": "python",
+      "args": [
+        "D:\\blast-radius\\agent\\mcp_server.py"
+      ],
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379"
+      }
+    }
+  }
+}
+```
+
+### 3. Verify in Antigravity Chat
+Start a new chat and ask:
+> "Using the blast-radius tools, which client sites are affected if chat-widget.js is hacked?"
+
+Antigravity will automatically discover and call the `blast_radius` tool and list the 3 affected client pages.
 
 ---
 
@@ -57,7 +93,7 @@ Restart Claude Desktop. You will see a hammer icon 🔨 indicating that the 5 to
 
 ## Testing Directly
 
-You can test the MCP server locally using the Python MCP CLI or SDK:
+You can test the MCP server locally using Python:
 
 ```bash
 python agent/mcp_server.py
