@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    { "id": "c1", "label": "Client", "name": "Sweet Crumbs Bakery" },
+    { "id": "s1", "label": "Site", "name": "bakery-demo.netlify.app" },
+    { "id": "p1", "label": "Page", "name": "bakery home" },
+    { "id": "j1", "label": "Script", "name": "tag-loader.js" },
+    { "id": "j2", "label": "Script", "name": "chat-widget.js" },
+    { "id": "j3", "label": "Script", "name": "helper.js" },
+    { "id": "d1", "label": "Domain", "name": "cdn-demo.netlify.app" }
+  ],
+  "edges": [
+    { "from": "c1", "to": "s1", "type": "OWNS" },
+    { "from": "s1", "to": "p1", "type": "HAS_PAGE" },
+    { "from": "p1", "to": "j1", "type": "LOADS" },
+    { "from": "j1", "to": "j2", "type": "LOADS" },
+    { "from": "j2", "to": "j3", "type": "LOADS" },
+    { "from": "j1", "to": "d1", "type": "SERVED_FROM" },
+    { "from": "j2", "to": "d1", "type": "SERVED_FROM" },
+    { "from": "j3", "to": "d1", "type": "SERVED_FROM" }
+  ]
+}
