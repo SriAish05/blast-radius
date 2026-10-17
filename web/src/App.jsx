@@ -6,6 +6,7 @@ import TracePanel from './components/TracePanel';
 import FixPanel from './components/FixPanel';
 import AskBox from './components/AskBox';
 import GraphView from './components/GraphView';
+import SpofView from './components/SpofView';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('incident'); // incident | ask | graph | spof
@@ -178,6 +179,10 @@ export default function App() {
 
               {activeTab === 'graph' && (
                 <GraphView />
+              )}
+
+              {activeTab === 'spof' && (
+                <SpofView />
               )}
             </>
           )}
