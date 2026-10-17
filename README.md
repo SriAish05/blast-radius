@@ -12,6 +12,7 @@ Track: Graph Hacks 2026, Track 01: Agents That Act on Connected Data
 3. Copy settings: `cp .env.example .env`
 4. Build the starting map: `python seed/seed_graph.py`
 5. Check the map answers: `python graph/queries.py` (every line should say PASS)
+6. Start the API: `uvicorn api.main:app --reload --port 8000`, then open http://localhost:8000/docs
 
 ## Folders
 
@@ -21,6 +22,8 @@ Track: Graph Hacks 2026, Track 01: Agents That Act on Connected Data
 | mocks/ | Fake API answers so the dashboard can be built early |
 | seed/ | Builds a small map from the answer key |
 | graph/ | The questions we ask the map (Cypher) |
+| fixer/ | Fix maker: SRI hash, CSP line, patch preview, client message |
+| api/ | The API the dashboard calls |
 
 Note: `contracts/answer_key.json` uses dummy demo URLs for now. They get replaced with the real demo sites.
 
