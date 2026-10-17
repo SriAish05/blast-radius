@@ -1,0 +1,26 @@
+{
+  "_note": "What the robot (crawler) must output: one object per page visited.",
+  "site": "https://bakery-demo.netlify.app",
+  "page": "https://bakery-demo.netlify.app/",
+  "crawled_at": "2026-10-17T19:30:00+05:30",
+  "scripts": [
+    {
+      "url": "https://cdn-demo.netlify.app/tag-loader.js",
+      "sha256": "put-real-hash-here",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cdn-demo.netlify.app/chat-widget.js",
+      "sha256": "put-real-hash-here",
+      "has_sri": false,
+      "loaded_by": "https://cdn-demo.netlify.app/tag-loader.js"
+    },
+    {
+      "url": "https://cdn-demo.netlify.app/helper.js",
+      "sha256": "put-real-hash-here",
+      "has_sri": false,
+      "loaded_by": "https://cdn-demo.netlify.app/chat-widget.js"
+    }
+  ]
+}

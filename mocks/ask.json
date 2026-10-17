@@ -1,0 +1,7 @@
+{
+  "question": "Which websites use chat-widget.js?",
+  "answer": "3 pages on 3 client sites load chat-widget.js. On the bakery and coaching sites it is loaded by tag-loader.js, so it does not appear in their HTML.",
+  "trace": [
+    { "step": 1, "tool": "blast_radius_script", "inputs": { "url": "https://cdn-demo.netlify.app/chat-widget.js" }, "rows": 3, "time_ms": 4 }
+  ]
+}

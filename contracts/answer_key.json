@@ -1,0 +1,121 @@
+{
+  "_note": "DUMMY answer key. Replace the URLs with the real demo site links when they are live. Keep the same shape.",
+  "agency": "agency_demo",
+  "clients": [
+    {
+      "name": "Sweet Crumbs Bakery",
+      "developer": "Teammate 3",
+      "sites": [
+        {
+          "url": "https://bakery-demo.netlify.app",
+          "pages": [
+            {
+              "url": "https://bakery-demo.netlify.app/",
+              "loads": [
+                {
+                  "script": "https://cdn-demo.netlify.app/tag-loader.js",
+                  "has_sri": false,
+                  "loads": [
+                    { "script": "https://cdn-demo.netlify.app/analytics.js", "has_sri": false, "loads": [] },
+                    {
+                      "script": "https://cdn-demo.netlify.app/chat-widget.js",
+                      "has_sri": false,
+                      "loads": [
+                        { "script": "https://cdn-demo.netlify.app/helper.js", "has_sri": false, "loads": [] }
+                      ]
+                    }
+                  ]
+                },
+                { "script": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js", "has_sri": true, "loads": [] }
+              ]
+            },
+            {
+              "url": "https://bakery-demo.netlify.app/contact",
+              "loads": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SmileCare Dental Clinic",
+      "developer": "Teammate 3",
+      "sites": [
+        {
+          "url": "https://clinic-demo.netlify.app",
+          "pages": [
+            {
+              "url": "https://clinic-demo.netlify.app/",
+              "loads": [
+                {
+                  "script": "https://cdn-demo.netlify.app/chat-widget.js",
+                  "has_sri": false,
+                  "loads": [
+                    { "script": "https://cdn-demo.netlify.app/helper.js", "has_sri": false, "loads": [] }
+                  ]
+                }
+              ]
+            },
+            {
+              "url": "https://clinic-demo.netlify.app/book",
+              "loads": [
+                { "script": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js", "has_sri": true, "loads": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BrightPath Coaching Centre",
+      "developer": "Teammate 3",
+      "sites": [
+        {
+          "url": "https://coaching-demo.netlify.app",
+          "pages": [
+            {
+              "url": "https://coaching-demo.netlify.app/",
+              "loads": [
+                {
+                  "script": "https://cdn-demo.netlify.app/tag-loader.js",
+                  "has_sri": false,
+                  "loads": [
+                    { "script": "https://cdn-demo.netlify.app/analytics.js", "has_sri": false, "loads": [] },
+                    {
+                      "script": "https://cdn-demo.netlify.app/chat-widget.js",
+                      "has_sri": false,
+                      "loads": [
+                        { "script": "https://cdn-demo.netlify.app/helper.js", "has_sri": false, "loads": [] }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "url": "https://coaching-demo.netlify.app/courses",
+              "loads": [
+                { "script": "https://cdn-demo.netlify.app/analytics.js", "has_sri": false, "loads": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "_note": "What the map must answer. Used to test the queries and the robot.",
+    "pages_affected_if_chat_widget_is_hacked": [
+      "https://bakery-demo.netlify.app/",
+      "https://clinic-demo.netlify.app/",
+      "https://coaching-demo.netlify.app/"
+    ],
+    "pages_affected_if_cdn_demo_domain_is_hacked": [
+      "https://bakery-demo.netlify.app/",
+      "https://clinic-demo.netlify.app/",
+      "https://coaching-demo.netlify.app/",
+      "https://coaching-demo.netlify.app/courses"
+    ],
+    "helper_js_is_never_in_html": true
+  }
+}
