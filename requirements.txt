@@ -2,3 +2,4 @@ falkordb
 python-dotenv
 fastapi
 uvicorn
+mcp
