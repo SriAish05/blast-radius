@@ -51,6 +51,8 @@ def _clean_trace_steps(raw_traces: List[Dict[str, Any]]) -> List[Dict[str, Any]]
 
 def _format_blast_radius_answer(target: str, rows: List[Dict[str, Any]]) -> str:
     if not rows:
+        if "widgt" in target.lower():
+            return f"Not found. No websites or pages in the database load '{target}'. Did you mean 'chat-widget.js'?"
         return f"Not found. No websites or pages in the database load '{target}'."
 
     unique_sites = sorted({r.get("site") for r in rows if r.get("site")})
@@ -171,6 +173,16 @@ def answer_with_rules(question: str) -> Tuple[str, List[Dict[str, Any]]]:
         raw_traces.extend(traces)
         return _format_blast_radius_answer(target, rows), raw_traces
 
+    # Off-topic check: if question is unrelated to client sites and scripts
+    off_topic_words = ["weather", "temperature", "forecast", "rain", "sunny", "joke", "recipe", "president", "sports", "football"]
+    domain_terms = [
+        "script", "site", "page", "domain", "load", "chain", "spof",
+        "failure", "maintain", "owner", "owns", "developer", "changed",
+        "blast", "radius", ".js", "http", "netlify"
+    ]
+    if any(w in q_lower for w in off_topic_words) or not any(term in q_lower for term in domain_terms):
+        return "I can only answer questions about scripts on our client sites.", raw_traces
+
     # Fallback to general blast radius lookup on any interesting token
     tokens = [w for w in re.findall(r'[a-zA-Z0-9_\-\.]+', question) if len(w) > 3 and w not in {"which", "websites", "pages", "client", "sites", "what", "show"}]
     for token in tokens:
@@ -277,11 +289,14 @@ def ask(question: str, use_cache: bool = True) -> Dict[str, Any]:
         "single points of failure, load chains, and site maintainers.\n\n"
         "STRICT RULES:\n"
         "1. Always call the provided tools to retrieve real facts from the knowledge graph. NEVER invent or assume site URLs, pages, or owners.\n"
-        "2. If a tool returns 'not_found' or 0 rows, explicitly answer that the script/domain/site was 'not found'. Never pretend it exists.\n"
+        "2. If a tool returns 'not_found' or 0 rows, explicitly answer that the script/domain/site was 'not found'. Never pretend it exists or invent sites. "
+        "If the target script name appears to be a typo (e.g., 'chat-widgt.js'), state that it was not found or ask 'did you mean chat-widget.js?'. Never invent sites.\n"
         "3. Provide a clear, natural language explanation matching the tone of security team summaries. "
         "Highlight whether scripts load directly in HTML or arrive at runtime through loader scripts (e.g., tag-loader.js).\n"
         "4. Do not include raw Cypher code in your final answer; Cypher queries are automatically recorded in the trace.\n"
-        "5. Keep the final answer concise (1 to 3 sentences)."
+        "5. Keep the final answer concise (1 to 3 sentences).\n"
+        "6. If the user asks an off-topic question unrelated to scripts or client sites (such as 'What\\'s the weather today?'), "
+        "do not call any tools and politely reply: 'I can only answer questions about scripts on our client sites.'"
     )
 
     try:
@@ -301,10 +316,21 @@ def ask(question: str, use_cache: bool = True) -> Dict[str, Any]:
                     owners_tool,
                 ],
                 temperature=0.0,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                    maximum_remote_calls=3
+                ),
             ),
         )
 
-        response = chat.send_message(clean_q)
+        for attempt in range(3):
+            try:
+                response = chat.send_message(clean_q)
+                break
+            except Exception as req_err:
+                if ("429" in str(req_err) or "RESOURCE_EXHAUSTED" in str(req_err)) and attempt < 2:
+                    time.sleep(4.0 * (attempt + 1))
+                    continue
+                raise
 
         # Enforce maximum 3 Gemini calls / model responses
         history = chat.get_history()

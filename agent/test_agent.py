@@ -39,6 +39,8 @@ QUESTIONS = [
     "Which scripts have changed since 2026-01-01?",
     "Which websites use non-existent-script.js?",
     "Who maintains https://non-existent-site.com?",
+    "Which websites use chat-widgt.js?",
+    "What's the weather today?",
 ]
 
 
@@ -59,6 +61,7 @@ def validate_result_shape(res: dict, expected_ai: bool):
 
 
 def run_tests():
+    total_q = len(QUESTIONS)
     print("=" * 70)
     print("RUNNING AGENT SUITE: AI_OFF=true (Deterministic Rules Engine)")
     print("=" * 70)
@@ -67,9 +70,21 @@ def run_tests():
     for i, q in enumerate(QUESTIONS, 1):
         res = agent.ask(q, use_cache=False)
         validate_result_shape(res, expected_ai=False)
-        print(f"[{i:02d}/10] Q: {q}")
+        print(f"[{i:02d}/{total_q:02d}] Q: {q}")
         print(f"      A: {res['answer']}")
         print(f"      Trace steps: {len(res['trace'])} | Used AI: {res['used_ai']}\n")
+
+        # Specific assertions per query
+        if "chat-widgt.js" in q:
+            ans = res["answer"].lower()
+            assert "not found" in ans or "did you mean" in ans, f"Typo must say not found or did you mean: {res['answer']}"
+            assert not any(s in ans for s in ["bakery-demo", "clinic-demo", "coaching-demo"]), f"Typo must never invent sites: {res['answer']}"
+        elif "weather" in q:
+            assert "i can only answer questions about scripts on our client sites" in res["answer"].lower(), f"Off-topic must refuse politely: {res['answer']}"
+        elif q == "Which websites use chat-widget.js?":
+            assert any(w in res["answer"].lower() for w in ["bakery", "clinic", "coaching", "3"]), f"Core answer missing expected sites: {res['answer']}"
+            assert len(res["trace"]) >= 1, "Core answer trace must have at least 1 step"
+            assert "MATCH" in res["trace"][-1]["cypher"].upper(), "Trace cypher must contain MATCH"
 
     print("=" * 70)
     print("RUNNING AGENT SUITE: AI ON (Gemini Flash-Lite Model)")
@@ -78,28 +93,27 @@ def run_tests():
     os.environ["AI_OFF"] = "false"
     import time
     for i, q in enumerate(QUESTIONS, 1):
-        time.sleep(2.0)  # Respect free tier rate limit
+        time.sleep(2.5)  # Respect free tier rate limit
         res = agent.ask(q, use_cache=False)
         validate_result_shape(res, expected_ai=True)
-        print(f"[{i:02d}/10] Q: {q}")
+        print(f"[{i:02d}/{total_q:02d}] Q: {q}")
         print(f"      A: {res['answer']}")
         print(f"      Trace steps: {len(res['trace'])} | Used AI: {res['used_ai']}\n")
 
-    # Specific assertions on the core hackathon goal
-    print("=" * 70)
-    print("VERIFYING CORE GOAL: chat-widget.js answer correctness")
-    print("=" * 70)
-    core = agent.ask("Which websites use chat-widget.js?", use_cache=False)
-    core_ans = core["answer"].lower()
-    # Must mention the 3 affected sites or bakery/clinic/coaching
-    assert any(w in core_ans for w in ["bakery", "clinic", "coaching", "3"]), f"Core answer missing expected sites: {core['answer']}"
-    # Must have trace containing cypher
-    assert len(core["trace"]) >= 1, "Core answer trace must have at least 1 step"
-    assert "MATCH" in core["trace"][-1]["cypher"].upper(), "Trace cypher must contain MATCH"
-    print("PASS: Core goal verified successfully!")
+        # Specific assertions per query
+        if "chat-widgt.js" in q:
+            ans = res["answer"].lower()
+            assert "not found" in ans or "did you mean" in ans, f"Typo must say not found or did you mean: {res['answer']}"
+            assert not any(s in ans for s in ["bakery-demo", "clinic-demo", "coaching-demo"]), f"Typo must never invent sites: {res['answer']}"
+        elif "weather" in q:
+            assert "i can only answer questions about scripts on our client sites" in res["answer"].lower(), f"Off-topic must refuse politely: {res['answer']}"
+        elif q == "Which websites use chat-widget.js?":
+            assert any(w in res["answer"].lower() for w in ["bakery", "clinic", "coaching", "3"]), f"Core answer missing expected sites: {res['answer']}"
+            assert len(res["trace"]) >= 1, "Core answer trace must have at least 1 step"
+            assert "MATCH" in res["trace"][-1]["cypher"].upper(), "Trace cypher must contain MATCH"
 
     print("=" * 70)
-    print("ALL 10 TESTS PASSED CLEANLY (BOTH AI ON AND AI_OFF=TRUE)")
+    print(f"ALL {total_q} TESTS PASSED CLEANLY (BOTH AI ON AND AI_OFF=TRUE)")
     print("=" * 70)
 
 
