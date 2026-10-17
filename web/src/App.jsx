@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, AlertCircle, HelpCircle, Network, Layers, RefreshCw } from 'lucide-react';
-import { fetchIncidents, fetchIncident } from './services/api';
+import { Shield, AlertCircle, HelpCircle, Network, Layers, RefreshCw, Flame } from 'lucide-react';
+import { fetchIncidents, fetchIncident, simulateHack } from './services/api';
 import IncidentOverview from './components/IncidentOverview';
 import TracePanel from './components/TracePanel';
 import FixPanel from './components/FixPanel';
@@ -11,6 +11,7 @@ export default function App() {
   const [selectedIncidentId, setSelectedIncidentId] = useState(null);
   const [incidentDetail, setIncidentDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [simulating, setSimulating] = useState(false);
 
   // Load incident list on mount
   useEffect(() => {
@@ -34,6 +35,24 @@ export default function App() {
     setSelectedIncidentId(id);
     const detail = await fetchIncident(id);
     setIncidentDetail(detail);
+  };
+
+  const handleSimulateHack = async () => {
+    setSimulating(true);
+    try {
+      const res = await simulateHack('chat-widget.js');
+      if (res && res.id) {
+        // Refresh incidents list and switch to the new incident
+        const list = await fetchIncidents();
+        setIncidents(list);
+        setSelectedIncidentId(res.id);
+        const detail = await fetchIncident(res.id);
+        setIncidentDetail(detail);
+        setActiveTab('incident');
+      }
+    } finally {
+      setSimulating(false);
+    }
   };
 
   return (
@@ -97,9 +116,43 @@ export default function App() {
             <Shield size={20} color="#2563eb" />
             <span>Third-Party Script Blast Radius Monitor</span>
           </div>
-          <button className="btn btn-outline" onClick={loadIncidents} title="Refresh Data">
-            <RefreshCw size={14} /> Refresh
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {incidents.length > 1 && (
+              <select
+                value={selectedIncidentId || ''}
+                onChange={(e) => handleSelectIncident(e.target.value)}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  fontSize: '13px',
+                  background: '#ffffff',
+                  fontWeight: 500,
+                  outline: 'none',
+                }}
+              >
+                {incidents.map((inc) => (
+                  <option key={inc.id} value={inc.id}>
+                    {inc.id} ({inc.script ? inc.script.split('/').pop() : 'script'}) - {inc.pages_affected || 3} pages
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <button
+              className="btn btn-danger"
+              onClick={handleSimulateHack}
+              disabled={simulating}
+              title="Simulate 3rd-party script compromise"
+            >
+              <Flame size={15} />
+              {simulating ? 'Simulating...' : 'Simulate hack'}
+            </button>
+
+            <button className="btn btn-outline" onClick={loadIncidents} title="Refresh Data">
+              <RefreshCw size={14} /> Refresh
+            </button>
+          </div>
         </header>
 
         <div className="content-container">
