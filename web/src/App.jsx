@@ -4,6 +4,7 @@ import { fetchIncidents, fetchIncident, simulateHack } from './services/api';
 import IncidentOverview from './components/IncidentOverview';
 import TracePanel from './components/TracePanel';
 import FixPanel from './components/FixPanel';
+import AskBox from './components/AskBox';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('incident'); // incident | ask | graph | spof
@@ -168,6 +169,10 @@ export default function App() {
                   <TracePanel trace={incidentDetail?.trace} />
                   <FixPanel incident={incidentDetail} onIncidentUpdated={(updated) => setIncidentDetail(updated)} />
                 </>
+              )}
+
+              {activeTab === 'ask' && (
+                <AskBox />
               )}
             </>
           )}
