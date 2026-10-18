@@ -90,7 +90,7 @@ def check_once(graph, fetch=fetch_script):
             graph.query(MARK_CHANGED, {"url": url, "new": new, "now": now})
             inc_id = new_incident_id()
             graph.query(CREATE_INCIDENT, {"url": url, "id": inc_id, "t": now})
-            print(f"ALARM: {short_name(url)} changed → incident {inc_id}", flush=True)
+            print(f"ALARM: {short_name(url)} changed -> incident {inc_id}", flush=True)
             alarms.append((url, inc_id))
         else:
             graph.query(TOUCH, {"url": url, "now": now})

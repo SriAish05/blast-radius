@@ -43,8 +43,18 @@ def find_script(name_or_url):
 
 @app.get("/api/health")
 def health():
-    rows, _ = q.run("MATCH (n) RETURN count(n) AS nodes")
-    return {"ok": True, "nodes": rows[0]["nodes"]}
+    try:
+        rows, _ = q.run("MATCH (n) RETURN count(n) AS nodes")
+        node_count = rows[0]["nodes"] if rows else 0
+        return {"ok": True, "nodes": node_count}
+    except Exception:
+        # Do not leak credentials, connection strings, or internal stack traces
+        return {
+            "ok": False,
+            "nodes": 0,
+            "error": "database_unavailable",
+            "detail": "Graph database unreachable",
+        }
 
 
 @app.get("/api/graph")

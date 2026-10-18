@@ -7,6 +7,7 @@ import {
   simulateHack,
   subscribeApiStatus,
   checkApiHealth,
+  getApiStatus,
 } from './services/api';
 import IncidentOverview from './components/IncidentOverview';
 import TracePanel from './components/TracePanel';
@@ -50,6 +51,7 @@ export default function App() {
 
     async function init() {
       setLoading(true);
+      await checkApiHealth();
       const [list, graph] = await Promise.all([fetchIncidents(), fetchGraph()]);
       setIncidents(list);
       setGraphData(graph);
@@ -60,6 +62,9 @@ export default function App() {
         setSelectedIncidentId(activeId);
         const detail = await fetchIncident(activeId);
         setIncidentDetail(detail);
+      } else {
+        setSelectedIncidentId(null);
+        setIncidentDetail(null);
       }
       setLoading(false);
     }
@@ -84,6 +89,11 @@ export default function App() {
           newOnes.forEach((i) => known.add(i.id));
           setIncidents(list);
         }
+      } else if (Array.isArray(list) && list.length === 0 && getApiStatus()) {
+        // Polling confirmed live list is empty -> clear stale selection & detail
+        setIncidents([]);
+        setSelectedIncidentId(null);
+        setIncidentDetail(null);
       }
     }, 5000);
 
@@ -134,10 +144,17 @@ export default function App() {
   }, [graphData, incidentDetail]);
 
   const loadIncidents = async () => {
+    await checkApiHealth();
     const list = await fetchIncidents();
     setIncidents(list);
-    if (list && list.length > 0 && !selectedIncidentId) {
-      handleSelectIncident(list[0].id);
+    if (list && list.length > 0) {
+      if (!selectedIncidentId || !list.some((i) => i.id === selectedIncidentId)) {
+        handleSelectIncident(list[0].id);
+      }
+    } else if (Array.isArray(list) && list.length === 0 && getApiStatus()) {
+      // Confirmed live empty list -> clear stale selection and detail
+      setSelectedIncidentId(null);
+      setIncidentDetail(null);
     }
   };
 
@@ -280,9 +297,57 @@ export default function App() {
             <>
               {activeTab === 'incident' && (
                 <>
-                  <IncidentOverview incident={incidentDetail} safeSites={safeSites} />
-                  <TracePanel trace={incidentDetail?.trace} />
-                  <FixPanel incident={incidentDetail} onIncidentUpdated={(updated) => setIncidentDetail(updated)} />
+                  {incidentDetail ? (
+                    <>
+                      <IncidentOverview incident={incidentDetail} safeSites={safeSites} />
+                      <TracePanel trace={incidentDetail?.trace} />
+                      <FixPanel incident={incidentDetail} onIncidentUpdated={(updated) => setIncidentDetail(updated)} />
+                    </>
+                  ) : isLiveApi && incidents.length === 0 ? (
+                    <div className="card">
+                      <div className="card-header">
+                        <div className="card-title">
+                          <Shield size={18} color="#16a34a" />
+                          <span>Perimeter Clean — No Active Incidents</span>
+                        </div>
+                      </div>
+                      <div className="card-body" style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6' }}>
+                        <p>No supply chain compromises or unauthorized script modifications are currently detected across your monitored client perimeter.</p>
+                        <p style={{ marginTop: '10px', fontSize: '13px', color: '#64748b' }}>
+                          Use the <strong>Simulate hack</strong> button above or run the watcher to test real-time detection, FalkorDB blast radius tracing, and automated remediation.
+                        </p>
+                      </div>
+                    </div>
+                  ) : !isLiveApi ? (
+                    <div className="card">
+                      <div className="card-header">
+                        <div className="card-title">
+                          <AlertCircle size={18} color="#d97706" />
+                          <span>Live Security Monitor Offline — Operating in Mock/Demo Mode</span>
+                        </div>
+                      </div>
+                      <div className="card-body" style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6' }}>
+                        <p>
+                          Live security perimeter status cannot be confirmed because the backend API or FalkorDB graph database is disconnected or degraded.
+                        </p>
+                        <p style={{ marginTop: '10px', fontSize: '13px', color: '#64748b' }}>
+                          Operating with offline mock fallback data. Start the backend service (<code>uvicorn api.main:app</code>) and ensure FalkorDB is reachable to enable live monitoring.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="card">
+                      <div className="card-header">
+                        <div className="card-title">
+                          <AlertCircle size={18} color="#2563eb" />
+                          <span>Select an Incident</span>
+                        </div>
+                      </div>
+                      <div className="card-body" style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6' }}>
+                        <p>Select an incident from the dropdown above to inspect its blast radius trace and proposed remediation.</p>
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
 
