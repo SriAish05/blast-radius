@@ -1,0 +1,91 @@
+{
+  "site": "https://cafe-demo.vercel.app",
+  "page": "https://cafe-demo.vercel.app/",
+  "crawled_at": "2026-10-17T23:42:57.119369+05:30",
+  "scripts": [
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "sha256": "2c2b5462bbd8903fdd91d11656a319a34a410fb2ee92ca025bcb15ab40248bf8",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/framework-2c79e2a64abdb08b.js",
+      "sha256": "f2ae26ff518d9519afd2a3dc277d84e098458e6b6b85fa9548cda2bed24435e7",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/main-4dcb7f9b52833aba.js",
+      "sha256": "e3de03de8bae4ba978c0a9d2e2f2f3aad39cf3c531b1f4dad95324e3f47dd07f",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/pages/_app-2dfd096757008a0f.js",
+      "sha256": "e0a82e3587e9ed51fc5d4fee4609d283a80ff5ea0c1b2a40347285ab350af531",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/17007de1-b0a99ddccf52df71.js",
+      "sha256": "f3c9951d181718f429b151f7eb1465cc80b017ca5c38d2cb6f45b8bd21e89754",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/d64684d8-ab78b2ccb37e342d.js",
+      "sha256": "df5a10f435e3c03cb7a6313d987ec9ed82640d277f1a384ebc148264d35e9efd",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/78e521c3-d21ecd56d95c9a13.js",
+      "sha256": "01363860976508f976701ae10969c7131f28148ef16da4d15ea14cea48589e80",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/20-234f64d036441fd3.js",
+      "sha256": "5d3ee76db07da4d9f3f11c3b6e54d98da4478faf5737cd1a2756db2bde4c4a3d",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/389-d2d598cc810f9aa6.js",
+      "sha256": "f47b3ced237d6931e9fe241f05b5c3ce0647c600ed8a3e9da9078b5110a2d948",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/pages/index-2da4f3f5e0ab6952.js",
+      "sha256": "27db4e8459286e7d276de616cd1949a125957ffc6875b844d3cf842dc43d8c74",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/2nObcjmQ6-qpCxpDtQryi/_buildManifest.js",
+      "sha256": "363e923df7af926be15350c1aaf6a1f2a37cee4675602cb1042cda877d0d4b06",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/2nObcjmQ6-qpCxpDtQryi/_ssgManifest.js",
+      "sha256": "6f5b4aa00d2f8d6aed9935b471806bf7acef464d0c1d390260e5fe27f800c67e",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/d0c16330-080daa03af96210b.js",
+      "sha256": "5f6507a69eaa1ffedcb63e9ae72b0780ddbc5b98368116a496e1b077c93df8ad",
+      "has_sri": false,
+      "loaded_by": "https://cafe-demo.vercel.app/_next/static/chunks/main-4dcb7f9b52833aba.js"
+    },
+    {
+      "url": "https://cafe-demo.vercel.app/_next/static/chunks/pages/cart-8be8007804d8f98a.js",
+      "sha256": "6b0888e5a4b7406c2a2fe4ef1648e701aa6e02ec7f8d11e3a09c30151694f61d",
+      "has_sri": false,
+      "loaded_by": "https://cafe-demo.vercel.app/_next/static/chunks/main-4dcb7f9b52833aba.js"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "site": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app",
+  "page": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/",
+  "crawled_at": "2026-10-17T23:42:47.087439+05:30",
+  "scripts": [
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js",
+      "sha256": "0da3d6134abc073f8eaf7bd5c06ee807f24ca75feca5c46a0caec653c9294d9a",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/fd9d1056-d1e3289abb12ddb6.js",
+      "sha256": "290cd5ee622810691464f96fb88e9201911c4ded8be8d1d19fe5441065e127c6",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/2117-8e1d5d865c5d7b65.js",
+      "sha256": "8e262a13e326256b6fc847a86077e5392cb8601039ddd5efd61e5b08bdf6b5db",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/main-app-dd9357982cbe95c2.js",
+      "sha256": "97bbd4f547f10e633fb2a07d23bfedfb8bf14902d64d43e45aa8331219df0883",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/2972-2aafe518c992f71b.js",
+      "sha256": "d4f240b6ea96a40b606b7accbf48ebaba99f1dd43377c42ba9db410911eb1d60",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/1293-6e72edaea319dd54.js",
+      "sha256": "48588821335175652e6f83f0b2c9e781f14da19b0c8a481723a2714a9510a605",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/7454-a481197b72383f1c.js",
+      "sha256": "2269915f1216d1f43ed438d9269538c38c8e8a8332ee2319545ccbe0a8d940b9",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/770-261a178ec360cdbb.js",
+      "sha256": "b758f0f64f20e1b62ceea86932878e0f4b47fc47cd13649b761996ea6ec15969",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/page-f9e3ca9182b10cd9.js",
+      "sha256": "57f5763a602fd9c53922eeb153e08ec45af5fff413a2d99309a4c576c95089fc",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/layout-3f3c2cf6e72dfd61.js",
+      "sha256": "7e53e3395bd76fa97a7b66e8fbeb6d1390685e2c65ae633febd4e8dfc79e45cd",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cdn-demo.netlify.app/tag-loader.js",
+      "sha256": "",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/register/page-4deb35b44d169225.js",
+      "sha256": "c3363e3c2b30eed83e2709eff609b3598ba073952648473ab27d838716637531",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/login/page-e8e5853d2b405202.js",
+      "sha256": "67693e5a52de06f3896eb7652e1563a3431c918e82632189adb2bb7ef453dee8",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/2605-69ff855d07efc193.js",
+      "sha256": "2f1524717abf9e1e0e6b335aab26d4f14560b6ddb7630f33766ca89160ca8bf2",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/offers/page-654567b940d3d387.js",
+      "sha256": "8333806fd2c73cfeeb8ab709789975bd5a519574110fa2c0c59fdce8c6a7bc9e",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/1996-4fadddd554aced61.js",
+      "sha256": "9514a6ecba12b3a02147812216266b2368ce94bfa9296b16b986ed5b5e2d409e",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/contact/page-6803e64213044200.js",
+      "sha256": "2113113e8a434d70edf90221b97a46bd273989c4327fc6ff12e1ff1d674027e7",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/rooms/page-950ae2769175c0d2.js",
+      "sha256": "e07e89f63f295ce57af01217667bc5bf0440282dce647731cfa160cbae3eb4eb",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/experiences/page-993fd7dddf629ca0.js",
+      "sha256": "cfa1faa658c852d19e7d4eeee7e148824b8be587ac15dc037e35a6b3f1fc51c6",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/dining/page-364b82299282cd14.js",
+      "sha256": "ab44e95abba678f51c64946f25ba5034ce457996231824804255830bc9ce0eda",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    },
+    {
+      "url": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/app/about/page-f8cf71ebb573601b.js",
+      "sha256": "cc9aada4d15d6c4613260cbb91fa750ae706fe63abfddad27162f3d051fd8d9e",
+      "has_sri": false,
+      "loaded_by": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app/_next/static/chunks/webpack-c3fc8395435f4cb4.js"
+    }
+  ]
+}

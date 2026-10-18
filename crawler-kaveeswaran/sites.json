@@ -1,0 +1,42 @@
+[
+  {
+    "client": "SmileCare Dental Clinic",
+    "developer": "Teammate 3",
+    "site": "https://dental-hospital-nine.vercel.app",
+    "pages": [
+      "/"
+    ]
+  },
+  {
+    "client": "SmartMart",
+    "developer": "Teammate 3",
+    "site": "https://smartmart-demo.netlify.app",
+    "pages": [
+      "/"
+    ]
+  },
+  {
+    "client": "Aurelis",
+    "developer": "Teammate 3",
+    "site": "https://frontend-fawn-mu-z8o5xkbha4.vercel.app",
+    "pages": [
+      "/"
+    ]
+  },
+  {
+    "client": "Wedding hall",
+    "developer": "Teammate 4",
+    "site": "https://wedding-hall-demo.netlify.app",
+    "pages": [
+      "/"
+    ]
+  },
+  {
+    "client": "Cafe",
+    "developer": "Teammate 4",
+    "site": "https://cafe-demo.vercel.app",
+    "pages": [
+      "/"
+    ]
+  }
+]
