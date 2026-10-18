@@ -93,8 +93,9 @@ RETURN c.name, s.url, p.url, [n IN nodes(path)[2..] | n.url], length(path) > 3
 **Single points of failure** (domains that reach the most client sites):
 ```cypher
 MATCH (s:Site)-[:HAS_PAGE]->(:Page)-[:LOADS*1..5]->(:Script)-[:SERVED_FROM]->(d:Domain)
-WHERE NOT d.first_party
-RETURN d.name AS domain, count(DISTINCT s) AS sites ORDER BY sites DESC
+WHERE d.first_party = false
+RETURN d.name AS domain, count(DISTINCT s) AS sites_reached
+ORDER BY sites_reached DESC LIMIT $limit
 ```
 
 **Per-site CSP input** (every domain a site really loads scripts from):
