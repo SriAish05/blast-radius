@@ -4,11 +4,11 @@
 
 Built on **FalkorDB** for **Graph Hacks 2026**. Track: **01, Agents That Act on Connected Data**.
 
-| | |
-|---|---|
-| Live dashboard | `ADD VERCEL LINK` |
-| Live API | `ADD RENDER LINK`/api/health |
-| Demo video | `ADD VIDEO LINK` |
+> **In our live test, a code search found 1 affected client site. The graph found all 7, and 6 of them were hidden from the code.**
+
+🎥 **Demo video:** https://youtu.be/B-1rQZDAv8U
+📝 **Blog:** [One Hacked Script, Seven Websites: Following the Trail with FalkorDB](https://medium.com/@kaveesw123/one-hacked-script-seven-websites-following-the-trail-with-falkordb-6945af7b1292)
+💻 **Run it locally in about 10 minutes:** see [Run it yourself](#run-it-yourself).
 
 ---
 
@@ -23,6 +23,20 @@ When a vendor is compromised (as with Polyfill.io in 2024), the agency has to an
 3. **What exact fix do I apply to each site?**
 
 Searching the HTML (`grep`) misses every site where the bad script is loaded *by another script*. That's a multi-hop question, which is exactly what a graph answers well.
+
+### See it in three pictures
+
+**1. A normal day.** Six sites get the chat widget through `tag-loader.js`, so it never appears in their HTML. Only SmileCare loads it directly.
+
+![Normal day](docs/images/normal-day.png)
+
+**2. The vendor is hacked: search the code.** A text search finds only 1 of the 7 affected sites.
+
+![Search the code finds 1 of 7](docs/images/search-the-code.png)
+
+**3. The vendor is hacked: ask the graph.** One FalkorDB query follows every chain and finds all 7, with the exact path for each.
+
+![Ask the graph finds 7 of 7](docs/images/ask-the-graph.png)
 
 ## What we built and what we proved
 
