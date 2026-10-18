@@ -36,8 +36,16 @@ def now():
 
 
 def find_script(name_or_url):
-    rows, _ = q.run("MATCH (s:Script) WHERE s.url = $v OR s.url ENDS WITH $slash RETURN s.url AS url",
-                    {"v": name_or_url, "slash": "/" + name_or_url.rsplit("/", 1)[-1]})
+    """Exact URL first; otherwise match by file name, preferring the third-party (vendor) copy
+    over a site's own file with the same name."""
+    rows, _ = q.run(
+        """
+        MATCH (s:Script) WHERE s.url = $v OR s.url ENDS WITH $slash
+        OPTIONAL MATCH (s)-[:SERVED_FROM]->(d:Domain)
+        RETURN s.url AS url, s.url = $v AS exact, coalesce(d.first_party, false) AS first_party
+        ORDER BY exact DESC, first_party ASC
+        """,
+        {"v": name_or_url, "slash": "/" + name_or_url.rsplit("/", 1)[-1]})
     return rows[0]["url"] if rows else None
 
 
