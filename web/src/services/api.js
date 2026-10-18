@@ -76,12 +76,9 @@ async function safeFetch(url, options = {}, fallbackData = null) {
 
 export async function fetchIncidents() {
   const data = await safeFetch(`${API_BASE}/incidents`, {}, null);
-  // If API was unreachable or failed, data is null -> fall back to mocks
-  if (data === null) {
-    return mockIncidents;
-  }
-  // When live, preserve real response (even if empty [])
-  return data;
+  // Live API answered: show the real list, even when it is empty (all clear).
+  // Only fall back to demo data when the API cannot be reached (data is null).
+  return Array.isArray(data) ? data : mockIncidents;
 }
 
 export async function fetchIncident(id) {

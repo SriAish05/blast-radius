@@ -5,7 +5,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     plan: free
-    branch: feat/dashboard
+    branch: main
     envVars:
       - key: FALKORDB_HOST
         sync: false

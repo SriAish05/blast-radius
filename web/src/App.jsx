@@ -88,6 +88,10 @@ export default function App() {
           });
           newOnes.forEach((i) => known.add(i.id));
           setIncidents(list);
+          // Open the new alarm straight away
+          setSelectedIncidentId(newest.id);
+          const detail = await fetchIncident(newest.id);
+          setIncidentDetail(detail);
         }
       } else if (Array.isArray(list) && list.length === 0 && getApiStatus()) {
         // Polling confirmed live list is empty -> clear stale selection & detail
@@ -308,13 +312,16 @@ export default function App() {
                       <div className="card-header">
                         <div className="card-title">
                           <Shield size={18} color="#16a34a" />
-                          <span>Perimeter Clean — No Active Incidents</span>
+                          <span>All Clear — Perimeter Clean</span>
                         </div>
                       </div>
                       <div className="card-body" style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6' }}>
-                        <p>No supply chain compromises or unauthorized script modifications are currently detected across your monitored client perimeter.</p>
+                        <p>
+                          <strong>All clear.</strong> No supply chain compromises or unauthorized script modifications detected across{' '}
+                          <strong>{(graphData?.nodes || []).filter((n) => n.label === 'Site').length} client site(s)</strong>.
+                        </p>
                         <p style={{ marginTop: '10px', fontSize: '13px', color: '#64748b' }}>
-                          Use the <strong>Simulate hack</strong> button above or run the watcher to test real-time detection, FalkorDB blast radius tracing, and automated remediation.
+                          New alarms appear here automatically. Use the <strong>Simulate hack</strong> button above or run the watcher to test real-time detection, FalkorDB blast radius tracing, and automated remediation.
                         </p>
                       </div>
                     </div>
