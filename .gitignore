@@ -1,7 +1,10 @@
 .env
+.env*
+!.env.example
 __pycache__/
 *.pyc
 node_modules/
 dist/
 .next/
 .venv/
+crawler/output/
