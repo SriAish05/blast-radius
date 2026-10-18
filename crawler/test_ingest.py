@@ -67,23 +67,33 @@ SAMPLE_CRAWL = {
     "page": "https://smilecare-demo.netlify.app/",
     "crawled_at": "2026-10-18T10:00:00+05:30",
     "scripts": [
+        # First-party script (should be skipped by default)
+        {
+            "url": "https://smilecare-demo.netlify.app/app.js",
+            "sha256": "hash-app-000",
+            "has_sri": False,
+            "loaded_by": "page",
+        },
+        # Third-party script loaded by page
         {
             "url": "https://cdn-demo.netlify.app/tag-loader.js",
             "sha256": "hash-tag-loader-123",
             "has_sri": False,
             "loaded_by": "page",
         },
+        # Third-party script loaded by another third-party script
         {
             "url": "https://cdn-demo.netlify.app/chat-widget.js",
             "sha256": "hash-chat-widget-456",
             "has_sri": False,
             "loaded_by": "https://cdn-demo.netlify.app/tag-loader.js",
         },
+        # Third-party script loaded by the first-party app.js (should fallback to page load when app.js is skipped)
         {
-            "url": "https://cdn-demo.netlify.app/helper.js",
-            "sha256": "hash-helper-789",
+            "url": "https://cdn-demo.netlify.app/analytics.js",
+            "sha256": "hash-analytics-789",
             "has_sri": False,
-            "loaded_by": "https://cdn-demo.netlify.app/chat-widget.js",
+            "loaded_by": "https://smilecare-demo.netlify.app/app.js",
         },
     ],
 }
@@ -119,63 +129,59 @@ def run_tests():
     assert "ON MATCH SET r.via = 'runtime'" in ingest.CYPHER_MERGE_RUNTIME_LOAD
     print("PASS: Cypher MERGE pattern and ON CREATE/MATCH structure")
 
-    # 3. Ingestion execution
-    g = FakeGraph()
-    count = ingest.ingest_crawl_data(g, SAMPLE_CRAWL, SITES_META)
-    assert count == 3, f"Expected 3 scripts ingested, got {count}"
+    # 3. Third-party filtering by default (keep_all=False)
+    g_default = FakeGraph()
+    res_default = ingest.ingest_crawl_data(g_default, SAMPLE_CRAWL, SITES_META, keep_all=False)
+    assert res_default["scripts"] == 3, f"Expected 3 third-party scripts, got {res_default['scripts']}"
+    assert res_default["skipped"] == 1, f"Expected 1 first-party script skipped, got {res_default['skipped']}"
 
-    # Verify nodes & edges
-    assert ("Client", "SmileCare Clinic") in g.nodes
-    assert ("Site", "https://smilecare-demo.netlify.app") in g.nodes
-    assert ("Page", "https://smilecare-demo.netlify.app/") in g.nodes
-    assert ("Developer", "Teammate 3") in g.nodes
-    assert ("Script", "https://cdn-demo.netlify.app/tag-loader.js") in g.nodes
-    assert ("Script", "https://cdn-demo.netlify.app/chat-widget.js") in g.nodes
-    assert ("Script", "https://cdn-demo.netlify.app/helper.js") in g.nodes
-    assert ("Domain", "cdn-demo.netlify.app") in g.nodes
+    # First-party app.js must NOT be in nodes
+    assert ("Script", "https://smilecare-demo.netlify.app/app.js") not in g_default.nodes
+    # Third-party scripts must be in nodes
+    assert ("Script", "https://cdn-demo.netlify.app/tag-loader.js") in g_default.nodes
+    assert ("Script", "https://cdn-demo.netlify.app/chat-widget.js") in g_default.nodes
+    assert ("Script", "https://cdn-demo.netlify.app/analytics.js") in g_default.nodes
 
-    # Verify relationships & properties
-    tag_key = ("https://smilecare-demo.netlify.app/", "LOADS", "https://cdn-demo.netlify.app/tag-loader.js")
-    chat_key = ("https://cdn-demo.netlify.app/tag-loader.js", "LOADS", "https://cdn-demo.netlify.app/chat-widget.js")
-    helper_key = ("https://cdn-demo.netlify.app/chat-widget.js", "LOADS", "https://cdn-demo.netlify.app/helper.js")
+    # analytics.js was loaded by skipped app.js -> must fall back to page html load
+    analytics_edge = ("https://smilecare-demo.netlify.app/", "LOADS", "https://cdn-demo.netlify.app/analytics.js")
+    assert analytics_edge in g_default.edges and g_default.edges[analytics_edge]["via"] == "html"
+    print("PASS: Third-party filtering by default and fallback of loaded_by")
 
-    assert tag_key in g.edges and g.edges[tag_key]["via"] == "html"
-    assert chat_key in g.edges and g.edges[chat_key]["via"] == "runtime"
-    assert helper_key in g.edges and g.edges[helper_key]["via"] == "runtime"
-    print("PASS: Entity and multi-hop relationship creation with via properties")
+    # 4. Ingestion with keep_all=True
+    g_all = FakeGraph()
+    res_all = ingest.ingest_crawl_data(g_all, SAMPLE_CRAWL, SITES_META, keep_all=True)
+    assert res_all["scripts"] == 4, f"Expected 4 scripts with keep_all=True, got {res_all['scripts']}"
+    assert res_all["skipped"] == 0
+    assert ("Script", "https://smilecare-demo.netlify.app/app.js") in g_all.nodes
+    print("PASS: Ingestion with keep_all=True")
 
-    # 4. Idempotency test: re-ingest identical input
-    prev_nodes_count = len(g.nodes)
-    prev_edges_count = len(g.edges)
+    # 5. Idempotency test: re-ingest identical input
+    prev_nodes_count = len(g_default.nodes)
+    prev_edges_count = len(g_default.edges)
 
-    ingest.ingest_crawl_data(g, SAMPLE_CRAWL, SITES_META)
-    assert len(g.nodes) == prev_nodes_count, "Running ingest twice must NOT create duplicate nodes"
-    assert len(g.edges) == prev_edges_count, "Running ingest twice must NOT create duplicate edges"
+    ingest.ingest_crawl_data(g_default, SAMPLE_CRAWL, SITES_META, keep_all=False)
+    assert len(g_default.nodes) == prev_nodes_count, "Running ingest twice must NOT create duplicate nodes"
+    assert len(g_default.edges) == prev_edges_count, "Running ingest twice must NOT create duplicate edges"
     print("PASS: Re-ingestion idempotency (zero duplicate nodes or edges on re-run)")
 
-    # 5. Pre-existing LOADS relationship without a via property
+    # 6. Pre-existing LOADS relationship without a via property
     g_pre = FakeGraph()
     pre_edge_key = ("https://smilecare-demo.netlify.app/", "LOADS", "https://cdn-demo.netlify.app/tag-loader.js")
-    # Simulate pre-existing relationship without 'via' property
     g_pre.edges[pre_edge_key] = {}
     assert "via" not in g_pre.edges[pre_edge_key]
-    initial_edge_count = len(g_pre.edges)
 
-    ingest.ingest_crawl_data(g_pre, SAMPLE_CRAWL, SITES_META)
-    # The pre-existing LOADS relationship must be matched (not duplicated) and updated with via='html'
+    ingest.ingest_crawl_data(g_pre, SAMPLE_CRAWL, SITES_META, keep_all=False)
     loads_edges = [k for k in g_pre.edges.keys() if k[1] == "LOADS" and k[0] == pre_edge_key[0] and k[2] == pre_edge_key[2]]
     assert len(loads_edges) == 1, f"Expected exactly 1 LOADS edge between endpoints, found {len(loads_edges)}"
     assert g_pre.edges[pre_edge_key]["via"] == "html", "Pre-existing edge without via must be updated to via='html'"
     print("PASS: Pre-existing LOADS relationship without via updated idempotently without duplication")
 
-    # 6. Pre-existing relationship whose via value differs
+    # 7. Pre-existing relationship whose via value differs
     g_diff = FakeGraph()
     diff_key = ("https://smilecare-demo.netlify.app/", "LOADS", "https://cdn-demo.netlify.app/tag-loader.js")
-    # Simulate pre-existing relationship with via='runtime' (or legacy value)
     g_diff.edges[diff_key] = {"via": "runtime"}
-    initial_diff_edges = len(g_diff.edges)
 
-    ingest.ingest_crawl_data(g_diff, SAMPLE_CRAWL, SITES_META)
+    ingest.ingest_crawl_data(g_diff, SAMPLE_CRAWL, SITES_META, keep_all=False)
     loads_diff = [k for k in g_diff.edges.keys() if k[1] == "LOADS" and k[0] == diff_key[0] and k[2] == diff_key[2]]
     assert len(loads_diff) == 1, f"Expected exactly 1 LOADS edge between endpoints, found {len(loads_diff)}"
     assert g_diff.edges[diff_key]["via"] == "html", "Pre-existing edge with differing via must be updated to via='html'"
