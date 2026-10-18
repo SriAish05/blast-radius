@@ -1,0 +1,37 @@
+{
+  "site": "https://dental-hospital-nine.vercel.app",
+  "page": "https://dental-hospital-nine.vercel.app/",
+  "crawled_at": "2026-10-17T23:42:38.172065+05:30",
+  "scripts": [
+    {
+      "url": "https://cdn-demo.netlify.app/chat-widget.js",
+      "sha256": "",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
+      "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://dental-hospital-nine.vercel.app/main.js",
+      "sha256": "ede6f72cbd6bfca4eef0beeac6c608e96b6a6044521b55b461e28b0ffbcfe18a",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://dental-hospital-nine.vercel.app/chat-widget.js",
+      "sha256": "ab20cc84eb9491108323a345cc4380a9b6eee3f74c48f3a658e8eb7b63138e37",
+      "has_sri": false,
+      "loaded_by": "page"
+    },
+    {
+      "url": "https://cdn-demo.netlify.app/helper.js",
+      "sha256": "",
+      "has_sri": false,
+      "loaded_by": "https://dental-hospital-nine.vercel.app/chat-widget.js"
+    }
+  ]
+}
