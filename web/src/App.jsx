@@ -83,6 +83,10 @@ export default function App() {
           });
           newOnes.forEach((i) => known.add(i.id));
           setIncidents(list);
+          // Open the new alarm straight away
+          setSelectedIncidentId(newest.id);
+          const detail = await fetchIncident(newest.id);
+          setIncidentDetail(detail);
         }
       }
     }, 5000);
@@ -278,7 +282,17 @@ export default function App() {
             </div>
           ) : (
             <>
-              {activeTab === 'incident' && (
+              {activeTab === 'incident' && !incidentDetail && (
+                <div className="card">
+                  <div className="card-body">
+                    <strong>All clear.</strong> No script changes detected.{' '}
+                    Monitoring {(graphData?.nodes || []).filter((n) => n.label === 'Site').length} client site(s).
+                    New alarms appear here automatically.
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'incident' && incidentDetail && (
                 <>
                   <IncidentOverview incident={incidentDetail} safeSites={safeSites} />
                   <TracePanel trace={incidentDetail?.trace} />

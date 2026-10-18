@@ -94,10 +94,20 @@ def propose_fix(script_url, clean_content=None):
 
         owner = owners[0]["developer"] if owners else "the site maintainer"
         n = len(info["pages"])
+        direct = any(not r["runtime_only"] for r in info["pages"])
+        hidden = any(r["runtime_only"] for r in info["pages"])
+        steps = []
+        if direct:
+            steps.append("pins the safe version" if sri else "self-hosts the script")
+        if hidden:
+            steps.append("pauses the script that loads it behind the scenes")
+        steps.append("blocks the affected source until it is confirmed safe")
+        how = ", ".join(steps[:-1]) + " and " + steps[-1] if len(steps) > 1 else steps[0]
+        note = (" It is not in your site's own code; another script loads it at runtime, "
+                "so it would be easy to miss.") if hidden and not direct else ""
         message = (f"Hi {info['client']} team, a third-party script used on your website ({name}) changed "
-                   f"unexpectedly. It affects {n} page{'s' if n != 1 else ''}. We have prepared a fix that "
-                   f"{'pins the safe version and ' if sri else ''}blocks the affected source until it is confirmed safe. "
-                   f"We will apply it once you reply OK. - {owner}")
+                   f"unexpectedly. It affects {n} page{'s' if n != 1 else ''}.{note} We have prepared a fix that "
+                   f"{how}. We will apply it once you reply OK. - {owner}")
 
         out_sites.append({"client": info["client"], "site": site, "owner": owner,
                           "pages": [r["page"] for r in info["pages"]],
