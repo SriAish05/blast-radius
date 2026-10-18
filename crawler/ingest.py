@@ -52,7 +52,10 @@ def main():
     for f in files:
         rec = json.loads(f.read_text(encoding="utf-8"))
         site = rec["site"].rstrip("/")
-        m = meta.get(site, {})
+        if site not in meta:
+            print(f"Skipping {f.name}: {site} is not in crawler/sites.json (old crawl file).")
+            continue
+        m = meta[site]
         g.query(
             """
             MERGE (c:Client {name: $client})
@@ -68,12 +71,27 @@ def main():
         )
         pages += 1
         own = domain_of(site)
+        # Keep third-party scripts, plus any of the site's own files that load a third-party script
+        # (so a hidden chain like page -> own.js -> vendor.js is still shown truthfully).
+        parent_of = {sc["url"]: sc["loaded_by"] for sc in rec["scripts"] if sc["loaded_by"] != "page"}
         kept = set()
         for sc in rec["scripts"]:
-            if not keep_all and domain_of(sc["url"]) == own:
+            if keep_all or domain_of(sc["url"]) != own:
+                u = sc["url"]
+                while u not in kept:
+                    kept.add(u)
+                    u = parent_of.get(u)
+                    if u is None:
+                        break
+        seen = set()
+        for sc in rec["scripts"]:
+            if sc["url"] not in kept:
                 skipped += 1
                 continue
-            kept.add(sc["url"])
+            key = (sc["url"], sc["loaded_by"])
+            if key in seen:
+                continue
+            seen.add(key)
             g.query(
                 """
                 MERGE (sc:Script {url: $url})
@@ -85,8 +103,7 @@ def main():
                 {"url": sc["url"], "now": now, "sha": sc.get("sha256") or "", "sri": bool(sc.get("has_sri")),
                  "domain": domain_of(sc["url"]), "fp": domain_of(sc["url"]) in site_domains},
             )
-            if sc["loaded_by"] == "page" or sc["loaded_by"] not in kept:
-                # loaded by the page, or by one of the site's own (skipped) files
+            if sc["loaded_by"] == "page":
                 g.query("MATCH (p:Page {url: $page}), (sc:Script {url: $url}) MERGE (p)-[:LOADS {via: 'html'}]->(sc)",
                         {"page": rec["page"], "url": sc["url"]})
             else:
