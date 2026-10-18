@@ -5,7 +5,9 @@ import mockGraph from '../mocks/graph.json';
 import mockAsk from '../mocks/ask.json';
 import mockApprove from '../mocks/approve.json';
 
-const rawBase = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+const rawBase =
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE) ||
+  'http://localhost:8000/api';
 export const API_BASE = rawBase.replace(/\/+$/, '');
 
 let apiListeners = [];
@@ -34,8 +36,11 @@ export async function checkApiHealth() {
   try {
     const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
-      notifyStatus(true);
-      return true;
+      const data = await res.json().catch(() => ({}));
+      if (data && data.ok !== false) {
+        notifyStatus(true);
+        return true;
+      }
     }
     notifyStatus(false);
     return false;
@@ -70,13 +75,18 @@ async function safeFetch(url, options = {}, fallbackData = null) {
 }
 
 export async function fetchIncidents() {
-  const data = await safeFetch(`${API_BASE}/incidents`, {}, mockIncidents);
-  return data && data.length ? data : mockIncidents;
+  const data = await safeFetch(`${API_BASE}/incidents`, {}, null);
+  // If API was unreachable or failed, data is null -> fall back to mocks
+  if (data === null) {
+    return mockIncidents;
+  }
+  // When live, preserve real response (even if empty [])
+  return data;
 }
 
 export async function fetchIncident(id) {
-  const data = await safeFetch(`${API_BASE}/incidents/${id}`, {}, mockIncident);
-  return data || mockIncident;
+  const data = await safeFetch(`${API_BASE}/incidents/${id}`, {}, null);
+  return data !== null ? data : mockIncident;
 }
 
 export async function simulateHack(script = 'chat-widget.js') {
