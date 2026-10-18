@@ -26,7 +26,7 @@ Searching the HTML (`grep`) misses every site where the bad script is loaded *by
 
 ## What we built and what we proved
 
-We built 7 demo client websites and a harmless demo CDN. Then we "hacked" one CDN file (`chat-widget.js`) and let the system respond. Result on live data:
+Our team runs a small web startup, so we built **7 realistic client websites** the same way we build sites for local businesses: a wedding hall, a cafe, a dental clinic, a hotel, shops. You can't safely hack a real client's site, so we also built our own harmless CDN, "hacked" one file on it (`chat-widget.js`), and let the system respond. Result on the live sites:
 
 - The **watcher** noticed the file's fingerprint (SHA-256) changed and raised an alarm.
 - **FalkorDB** found **7 affected pages on 7 client sites. 6 of them load the script only at runtime** through `tag-loader.js`, so it is not in their HTML.
@@ -60,6 +60,21 @@ We built 7 demo client websites and a harmless demo CDN. Then we "hacked" one CD
 **Who loaded which script:** the crawler opens each page in headless Chromium and listens to the Chrome DevTools `Network.requestWillBeSent` event. The *initiator* stack tells us whether a script came from the page's HTML or was injected by another script. That parent → child link becomes an edge in the graph.
 
 ## Graph model
+
+```mermaid
+graph LR
+  C[Client] -- OWNS --> S[Site]
+  D[Developer] -- MAINTAINS --> S
+  S -- HAS_PAGE --> P[Page]
+  P -- "LOADS (via html)" --> SC1[Script<br/>tag-loader.js]
+  SC1 -- "LOADS (via runtime)" --> SC2[Script<br/>chat-widget.js]
+  SC2 -- "LOADS (via runtime)" --> SC3[Script<br/>helper.js]
+  SC1 -- SERVED_FROM --> DM[Domain<br/>cdn-demo.netlify.app]
+  SC2 -- SERVED_FROM --> DM
+  I[Incident] -- ABOUT --> SC2
+```
+
+**How the agent uses it:** when a script changes, the agent walks `Client → Site → Page → LOADS*1..5 → Script` to find every affected page, including pages that reach the script only through other scripts. It then reads each site's `SERVED_FROM` domains to build that site's CSP, and `MAINTAINS` to know who to notify.
 
 ```
 (:Client)-[:OWNS]->(:Site)-[:HAS_PAGE]->(:Page)-[:LOADS {via:'html'}]->(:Script)
@@ -152,7 +167,7 @@ cd web && npm install && npm run dev # http://localhost:5173
 
 ## Honest limits
 
-- The 7 client websites and the CDN are **demo sites we built**, not real businesses. The "hack" only adds a visible red banner.
+- The 7 client websites are realistic sites we built for this test, not live customer sites, and the CDN is our own. That's what let us run a real attack simulation safely. The "hack" only adds a visible red banner.
 - We crawl each site's home page; a real deployment would crawl more pages and re-crawl on a schedule.
 - The watcher detects that a file *changed*, not whether the change is malicious. It treats any unexpected change as an incident for a human to review.
 - **Approve** records the decision in the graph; opening the pull request on the client's repo is not connected yet.
