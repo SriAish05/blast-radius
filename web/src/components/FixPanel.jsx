@@ -190,8 +190,8 @@ export default function FixPanel({ incident, onIncidentUpdated }) {
                   {copiedMsg ? 'Copied' : 'Copy'}
                 </button>
               </div>
-              <div className="client-message-box">
-                "{message || 'A security alert has been registered for your third-party scripts.'}"
+              <div className="client-message-box" style={{ whiteSpace: 'pre-line' }}>
+                {message || 'A security alert has been registered for your third-party scripts.'}
               </div>
             </div>
           </div>
