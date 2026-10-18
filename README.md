@@ -14,6 +14,8 @@ Track: Graph Hacks 2026, Track 01: Agents That Act on Connected Data
 5. Check the map answers: `python graph/queries.py` (every line should say PASS)
 6. Start the API: `uvicorn api.main:app --reload --port 8000`, then open http://localhost:8000/docs
 
+*(Note: Render's free tier sleeps after ~15 min idle — first load may take a minute).*
+
 ## Folders
 
 | Folder | What is in it |

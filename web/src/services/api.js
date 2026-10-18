@@ -5,7 +5,45 @@ import mockGraph from '../mocks/graph.json';
 import mockAsk from '../mocks/ask.json';
 import mockApprove from '../mocks/approve.json';
 
-export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+const rawBase = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+export const API_BASE = rawBase.replace(/\/+$/, '');
+
+let apiListeners = [];
+let isLiveApi = false;
+
+function notifyStatus(status) {
+  if (isLiveApi !== status) {
+    isLiveApi = status;
+    apiListeners.forEach((fn) => fn(status));
+  }
+}
+
+export function subscribeApiStatus(fn) {
+  apiListeners.push(fn);
+  fn(isLiveApi);
+  return () => {
+    apiListeners = apiListeners.filter((l) => l !== fn);
+  };
+}
+
+export function getApiStatus() {
+  return isLiveApi;
+}
+
+export async function checkApiHealth() {
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      notifyStatus(true);
+      return true;
+    }
+    notifyStatus(false);
+    return false;
+  } catch {
+    notifyStatus(false);
+    return false;
+  }
+}
 
 async function safeFetch(url, options = {}, fallbackData = null) {
   try {
@@ -18,11 +56,15 @@ async function safeFetch(url, options = {}, fallbackData = null) {
     });
     if (!res.ok) {
       console.warn(`API ${url} returned ${res.status}. Using fallback.`);
+      notifyStatus(false);
       return fallbackData;
     }
-    return await res.json();
+    const data = await res.json();
+    notifyStatus(true);
+    return data;
   } catch (err) {
     console.warn(`API ${url} fetch error: ${err.message}. Using fallback.`);
+    notifyStatus(false);
     return fallbackData;
   }
 }
